@@ -221,7 +221,7 @@ struct ContentView: View {
                             }
                         }
                     })
-                    .disabled(!mgr.dsready || isdebugged() || mgr.rcrunning || mgr.rcready)
+                    .disabled(!mgr.dsready || isdebugged() || mgr.rcrunning || mgr.rcready || mgr.vfsrunning || mgr.sbxrunning)
                 }
                 
                 // destroy remotecall

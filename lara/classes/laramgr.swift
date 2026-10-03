@@ -65,8 +65,8 @@ final class laramgr: ObservableObject {
     @Published var kaccesserror: String?
     @Published var fileopinprogress: Bool = false
     @Published var testresult: String?
-    #if !DISABLE_REMOTECALL
     @Published var rcrunning: Bool = false
+    #if !DISABLE_REMOTECALL
     @Published var eligibilitystate: Bool?
     @Published var eu1progress: Double = 0.0
     @Published var eu1running: Bool = false
@@ -95,9 +95,14 @@ final class laramgr: ObservableObject {
     var ytProc = RemoteCall(process: "youtube", useMigFilterBypass: false)
     
     static let shared = laramgr()
-    static let fontpath = "/System/Library/Fonts/Core/SFUI.ttf"
-    static let italicfontpath = "/System/Library/Fonts/Core/SFUIItalic.ttf"
-    static let monofontpath = "/System/Library/Fonts/Core/SFUIMono.ttf"
+    private static func systemFontPath(_ filename: String) -> String {
+        let directories = isIOS16() ? ["CoreUI", "Core"] : ["Core", "CoreUI"]
+        let paths = directories.map { "/System/Library/Fonts/\($0)/\(filename)" }
+        return paths.first { FileManager.default.fileExists(atPath: $0) } ?? paths[0]
+    }
+    static var fontpath: String { systemFontPath("SFUI.ttf") }
+    static var italicfontpath: String { systemFontPath("SFUIItalic.ttf") }
+    static var monofontpath: String { systemFontPath("SFUIMono.ttf") }
     init() {}
 
     struct AppInfo {
@@ -204,7 +209,7 @@ final class laramgr: ObservableObject {
     }
     
     func vfsinit(completion: ((Bool) -> Void)? = nil) {
-        guard dsready, hasOffsets, !vfsrunning, !sbxrunning else {
+        guard dsready, hasOffsets, !vfsrunning, !sbxrunning, !rcrunning else {
             completion?(false)
             return
         }
@@ -239,7 +244,7 @@ final class laramgr: ObservableObject {
     }
     
     func sbxescape(completion: ((Bool) -> Void)? = nil) {
-        guard dsready, hasOffsets, !sbxrunning, !vfsrunning else {
+        guard dsready, hasOffsets, !sbxrunning, !vfsrunning, !rcrunning else {
             completion?(false)
             return
         }
@@ -692,13 +697,14 @@ final class laramgr: ObservableObject {
     
     #if !DISABLE_REMOTECALL
     func rcinit(process: String, migbypass: Bool = false, completion: ((Bool) -> Void)? = nil) {
-        guard dsready, !rcready else {
+        guard dsready, !rcready, !rcrunning, !vfsrunning, !sbxrunning else {
             completion?(false)
             return
         }
         
         rcrunning = true
         rcLastError = nil
+        rcfailed = false
         logmsg("initializing remote call on \(process)...")
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -722,6 +728,7 @@ final class laramgr: ObservableObject {
                         self.logmsg("remote call init failed on \(process)")
                     }
                     self.rcrunning = false
+                    self.rcfailed = true
                 }
                 completion?(success)
             }
