@@ -204,7 +204,10 @@ final class laramgr: ObservableObject {
     }
     
     func vfsinit(completion: ((Bool) -> Void)? = nil) {
-        guard dsready, hasOffsets, !vfsrunning else { return }
+        guard dsready, hasOffsets, !vfsrunning, !sbxrunning else {
+            completion?(false)
+            return
+        }
         vfs_setlogcallback(laramgr.vfslogcallback)
         vfs_setprogresscallback { progress in
             DispatchQueue.main.async {
@@ -236,7 +239,10 @@ final class laramgr: ObservableObject {
     }
     
     func sbxescape(completion: ((Bool) -> Void)? = nil) {
-        guard dsready, hasOffsets, !sbxrunning else { return }
+        guard dsready, hasOffsets, !sbxrunning, !vfsrunning else {
+            completion?(false)
+            return
+        }
         sbxattempted = true
         sbxfailed = false
         sbxrunning = true

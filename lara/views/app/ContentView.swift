@@ -131,8 +131,11 @@ struct ContentView: View {
                         }
                     }) {
                         Button("Initialize System", action: {
-                            mgr.vfsinit()
-                            mgr.sbxescape()
+                            mgr.vfsinit { success in
+                                if success {
+                                    mgr.sbxescape()
+                                }
+                            }
                         })
                         .disabled(!mgr.hasOffsets || !mgr.dsready || mgr.vfsrunning || mgr.sbxrunning || (mgr.vfsready && mgr.sbxready))
                     }
@@ -145,7 +148,7 @@ struct ContentView: View {
                             Image(systemName: "checkmark.circle")
                         } else if mgr.vfsrunning {
                             HStack {
-                                Text("\(Int(mgr.dsprogress * 100))%")
+                                Text("\(Int(mgr.vfsprogress * 100))%")
                                 ProgressView()
                             }
                         } else if mgr.vfsattempted && mgr.vfsfailed {
