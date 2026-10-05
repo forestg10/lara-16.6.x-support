@@ -48,6 +48,7 @@ struct OffsetManagementView: View {
         "off_vm_object_vo_un1_vou_size", "off_vm_object_ref_count",
         "off_vm_named_entry_backing_copy", "off_vm_named_entry_size",
         "off_label_l_perpolicy_amfi", "off_label_l_perpolicy_sandbox",
+        "off_sandbox_policy_slot_global_rva",
         "sizeof_ipc_entry", "smr_base", "t1sz_boot", "VM_MIN_KERNEL_ADDRESS", "VM_MAX_KERNEL_ADDRESS"
     ]
 
@@ -174,6 +175,7 @@ struct OffsetManagementView: View {
             "off_vm_named_entry_size": hex(off_vm_named_entry_size),
             "off_label_l_perpolicy_amfi": hex(off_label_l_perpolicy_amfi),
             "off_label_l_perpolicy_sandbox": hex(off_label_l_perpolicy_sandbox),
+            "off_sandbox_policy_slot_global_rva": hex(off_sandbox_policy_slot_global_rva),
             "sizeof_ipc_entry": hex(sizeof_ipc_entry),
             "smr_base": hex(smr_base),
             "t1sz_boot": hex(t1sz_boot),
@@ -285,6 +287,7 @@ struct OffsetManagementView: View {
         setoffs32("off_vm_named_entry_size") { off_vm_named_entry_size = $0 }
         setoffs32("off_label_l_perpolicy_amfi") { off_label_l_perpolicy_amfi = $0 }
         setoffs32("off_label_l_perpolicy_sandbox") { off_label_l_perpolicy_sandbox = $0 }
+        setoffs32("off_sandbox_policy_slot_global_rva") { off_sandbox_policy_slot_global_rva = $0 }
         setoffs32("sizeof_ipc_entry") { sizeof_ipc_entry = $0 }
 
         setoffs64("smr_base") { smr_base = $0 }
