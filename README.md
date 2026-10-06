@@ -39,6 +39,7 @@
 | iOS Version | Support Status |
 | - | - |
 | iOS 16.x |  Possible ¹ |
+| iOS 16.6 - iOS 16.6.1 | Supported |
 | iOS 16.7.2 |  Tested, needs more testing |
 | iOS 17.0 - iOS 18.7.1 | Supported |
 | iOS 18.7.2+ | Not Supported |
